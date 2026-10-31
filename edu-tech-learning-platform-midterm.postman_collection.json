@@ -1,0 +1,506 @@
+{
+  "info": {
+    "name": "edu-tech-learning-platform-midterm",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "A1 - tutors with studio and subjects (no JSON loop)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/tutors/all",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "tutors",
+            "all"
+          ]
+        },
+        "description": "Check the tables and the join table in pgAdmin too."
+      }
+    },
+    {
+      "name": "A2 - CRUD: get one lesson by id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/lessons/{{lessonRequestedId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "lessons",
+            "{{lessonRequestedId}}"
+          ]
+        },
+        "description": "Error case: replace the id with a random UUID -> 404 'The lesson with that id does not exist'. Other CRUD: POST /save (201), PUT /update/{id}, DELETE /delete/{id}."
+      }
+    },
+    {
+      "name": "B1 - learners by school",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/learners/by-school?school=fawe",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "learners",
+            "by-school"
+          ],
+          "query": [
+            {
+              "key": "school",
+              "value": "fawe"
+            }
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "B2 - lessons by status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/lessons/by-status?status=REQUESTED",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "lessons",
+            "by-status"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "REQUESTED"
+            }
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "B3 - lessons between dates",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/lessons/between?start=2026-10-01&end=2026-11-30",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "lessons",
+            "between"
+          ],
+          "query": [
+            {
+              "key": "start",
+              "value": "2026-10-01"
+            },
+            {
+              "key": "end",
+              "value": "2026-11-30"
+            }
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "C1 - tutors by subject",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/tutors/by-subject?name=math",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "tutors",
+            "by-subject"
+          ],
+          "query": [
+            {
+              "key": "name",
+              "value": "math"
+            }
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "C2 - free studios",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/studios/free",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "studios",
+            "free"
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "C3 - subjects nobody holds",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/subjects/unused",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "subjects",
+            "unused"
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "C4 - learners of a tutor",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/learners/of-tutor/{{tutorId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "learners",
+            "of-tutor",
+            "{{tutorId}}"
+          ]
+        },
+        "description": "Error case: random UUID -> 404 'The tutor with that id does not exist'."
+      }
+    },
+    {
+      "name": "D1 - safe saving",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/lessons/save",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "lessons",
+            "save"
+          ]
+        },
+        "description": "Success: 201 and status is REQUESTED even though the body says TAUGHT. Errors: set lessonDate to 2020-01-01 -> 400 'Lesson date cannot be in the past'; send the same tutor+date twice -> 409 'Tutor already has a lesson on that date'.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"lessonDate\": \"{{futureDate}}\",\n  \"status\": \"TAUGHT\",\n  \"topic\": \"Trigonometry\",\n  \"durationMinutes\": 60,\n  \"learner\": {\n    \"id\": \"{{learnerId}}\"\n  },\n  \"tutor\": {\n    \"id\": \"{{tutorId}}\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "D2 - status flow",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/lessons/{{lessonRequestedId}}/status?status=ACCEPTED",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "lessons",
+            "{{lessonRequestedId}}",
+            "status"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "ACCEPTED"
+            }
+          ]
+        },
+        "description": "Success 200 first time. Error: PATCH {{lessonDeclinedId}} with status=REQUESTED -> 400 'Cannot change status from DECLINED to REQUESTED'."
+      }
+    },
+    {
+      "name": "D3 - add one subject to a tutor",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/tutors/{{tutorId}}/subjects/{{csSubjectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "tutors",
+            "{{tutorId}}",
+            "subjects",
+            "{{csSubjectId}}"
+          ]
+        },
+        "description": "200 first time; run again -> 409 'The tutor already has that subject'."
+      }
+    },
+    {
+      "name": "D4 - move a tutor to another studio",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/tutors/{{tutor3Id}}/studio?studioNumber=4",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "tutors",
+            "{{tutor3Id}}",
+            "studio"
+          ],
+          "query": [
+            {
+              "key": "studioNumber",
+              "value": "4"
+            }
+          ]
+        },
+        "description": "200 first time, then run C2 (studio 3 becomes free). Error: studioNumber=1 -> 409 'That studio is taken by another tutor'; studioNumber=99 -> 404."
+      }
+    },
+    {
+      "name": "E1 - write an assessment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/assessments/save?lessonId={{lessonTaughtId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "assessments",
+            "save"
+          ],
+          "query": [
+            {
+              "key": "lessonId",
+              "value": "{{lessonTaughtId}}"
+            }
+          ]
+        },
+        "description": "Error: use {{lessonRequestedId}} -> 400 'Assessments are only for TAUGHT lessons'.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"skill\": \"Problem solving\",\n  \"comment\": \"Solves quadratic equations confidently\",\n  \"score\": 85\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "E2 - assessment history of a learner",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/assessments/learner/{{learnerCode}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "assessments",
+            "learner",
+            "{{learnerCode}}"
+          ]
+        },
+        "description": "Also stores the first assessment id in {{assessmentId}} for E3."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const d = pm.response.json();",
+              "if (Array.isArray(d) && d.length) { pm.environment.set('assessmentId', d[0].id); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "E3 - delete an assessment",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/assessments/delete/{{assessmentId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "assessments",
+            "delete",
+            "{{assessmentId}}"
+          ]
+        },
+        "description": "Run E2 first. Protection: DELETE /api/lessons/delete/{{lessonTaughtId}} while it has assessments -> 409 'That lesson has assessments, delete them first'."
+      }
+    },
+    {
+      "name": "F1 - lessons per status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/lessons/stats/by-status",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "lessons",
+            "stats",
+            "by-status"
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "F2 - tutor is absent (cancel day)",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/lessons/cancel-day?tutorId={{tutorId}}&date={{doubleDate}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "lessons",
+            "cancel-day"
+          ],
+          "query": [
+            {
+              "key": "tutorId",
+              "value": "{{tutorId}}"
+            },
+            {
+              "key": "date",
+              "value": "{{doubleDate}}"
+            }
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "BONUS-1 - dashboard summary",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/dashboard/summary",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "dashboard",
+            "summary"
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "BONUS-2 - lessons page by page",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/lessons/page?page=0&size=5&sort=lessonDate,desc",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "lessons",
+            "page"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "5"
+            },
+            {
+              "key": "sort",
+              "value": "lessonDate,desc"
+            }
+          ]
+        },
+        "description": ""
+      }
+    }
+  ]
+}
